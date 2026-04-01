@@ -101,7 +101,7 @@ def synth_elevenlabs(text, voice_name="sarah"):
     audio = client.text_to_speech.convert(
         voice_id=voice_id,
         text=text,
-        model_id="eleven_turbo_v2",
+        model_id="eleven_multilingual_v2",
         output_format="mp3_44100_128",
     )
     with open(LOCAL_MP3, "wb") as f:

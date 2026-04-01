@@ -36,3 +36,22 @@ java -cp "$D8_JAR" com.android.tools.r8.D8 \
 # Copy to bin/
 cp "$BUILD_DIR/classes.dex" "$BIN_DIR/play.dex"
 echo "Built: $BIN_DIR/play.dex ($(wc -c < "$BIN_DIR/play.dex") bytes)"
+
+# --- StreamAudio (MODE_STREAM, reads PCM from stdin) ---
+echo ""
+echo "=== Building StreamAudio DEX ==="
+
+echo "Compiling..."
+javac -source 11 -target 11 \
+    -d "$BUILD_DIR" \
+    "$STUBS"/android/media/*.java \
+    src/StreamAudio.java 2>&1 | grep -v "^warning:" || true
+
+echo "Dexing..."
+mkdir -p "$BUILD_DIR/stream"
+java -cp "$D8_JAR" com.android.tools.r8.D8 \
+    --output "$BUILD_DIR/stream" \
+    "$BUILD_DIR"/StreamAudio*.class 2>&1 | grep -v "^Warning" || true
+
+cp "$BUILD_DIR/stream/classes.dex" "$BIN_DIR/stream.dex"
+echo "Built: $BIN_DIR/stream.dex ($(wc -c < "$BIN_DIR/stream.dex") bytes)"
